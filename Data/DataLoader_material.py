@@ -12,8 +12,7 @@ class DataLoader_material(Dataset):
         self.material_list = material_list
         self.transform = transform
         self.patient_list = patient_list
-
-        # Computing n_data = total number of slices
+        
         patient_file_number = torch.zeros([len(patient_list)+1])
         for n in range(len(patient_list)):
             patient_file_number[n+1] = len(os.listdir(img_dir + f'{patient_list[n]}/{material_list[0]}/'))

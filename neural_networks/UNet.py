@@ -1,5 +1,3 @@
-# Some code blocks comes from labml
-
 """
 ---
 title: U-Net model for Denoising Diffusion Probabilistic Models (DDPM)
@@ -26,7 +24,7 @@ from typing import Optional, Tuple, Union, List
 
 class Swish(nn.Module):
     """
-    ### Swish actiavation function
+    ### Swish activation function
     $$x \cdot \sigma(x)$$
     """
 
