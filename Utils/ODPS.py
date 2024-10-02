@@ -1,6 +1,6 @@
 import torch
 from skimage.metrics import structural_similarity, peak_signal_noise_ratio
-from my_utils_ddpm import x_pred, reverse_diffusion_from_x_pred, diffusion
+from Utils.my_utils_ddpm import x_pred, reverse_diffusion_from_x_pred, diffusion
 
 def ODPS(Y, background, radon, binned_spectrum, Q, pixel_size, x_mass_density, rho, t_prime, step, x_scout, material_nn, mean_material, std_material, alpha, alpha_bar, sigma2, grad_approx, device):
     '''
