@@ -63,7 +63,7 @@ def create_mass_attenuation_matrix(E_k, x_true_mat, pixel_size, device):
     Q_pseudo_spectral[:,1] = Q[E_k,1]
     
     
-    x_mass_density = torch.zeros_like(x_true_mat)
+    x_mass_density = torch.zeros_like(x_true_mat, device=device)
     x_mass_density[0,0] = rho_df['Bones'][0]        * x_true_mat[0,0] * pixel_size  # in g.cm^(-3)
     x_mass_density[0,1] = rho_df['Soft Tissues'][0] * x_true_mat[0,1] * pixel_size  # in g.cm^(-3)
 
