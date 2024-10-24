@@ -47,6 +47,7 @@ def create_mass_attenuation_matrix(E_k, x_true_mat, pixel_size, device):
     '''
     
     # Loading the material mass attenuation data
+    # Data frames are from SPEKTR (https://github.com/I-STAR/SPEKTR)
     df = pandas.read_csv('csv_files/mass_att.csv') # mm^-1
     rho_df = pandas.read_csv('csv_files/rho.csv')  # g cm^(-3)
     rho = torch.tensor([rho_df['Bones'][0], rho_df['Soft Tissues'][0] ])
