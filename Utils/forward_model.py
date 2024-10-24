@@ -38,6 +38,7 @@ def create_mass_attenuation_matrix(E_k, x_true_mat, pixel_size, device):
     
     INPUT : 
     E_k. [n_bin] array. Mean of each energy bin.
+    pixel_size : cm per pixel.
     
     OUPUTS :
     Q.                 [150, n_mat] tensor.                    Contains all mass attenuation coefficients of the materials for all 150 energies.
@@ -46,16 +47,14 @@ def create_mass_attenuation_matrix(E_k, x_true_mat, pixel_size, device):
     '''
     
     # Loading the material mass attenuation data
-    # Data frames are from SPEKTR (https://github.com/I-STAR/SPEKTR)
     df = pandas.read_csv('csv_files/mass_att.csv') # mm^-1
     rho_df = pandas.read_csv('csv_files/rho.csv')  # g cm^(-3)
     rho = torch.tensor([rho_df['Bones'][0], rho_df['Soft Tissues'][0] ])
     
-    Q = torch.zeros(150,2, device=device)
-    Q[:,1] = torch.tensor(df['Soft Tissues']  / rho_df['Soft Tissues'][0] ) * 10 # in cm^2 g^(-1)
-    Q[:,0] = torch.tensor(df['Bones']       / rho_df['Bones'][0] ) * 10          # in cm^2 g^(-1)
-    
 
+    Q = torch.zeros(150,2, device=device)
+    Q[:,0] = torch.tensor(df['Bones']      ) * 10 * pixel_size   # in pixel^(-1)
+    Q[:,1] = torch.tensor(df['Soft Tissues'] ) * 10 * pixel_size # in pixel^(-1)
 
     n_bin = len(E_k)
     Q_pseudo_spectral = torch.zeros(n_bin,2, device=device)
@@ -64,17 +63,22 @@ def create_mass_attenuation_matrix(E_k, x_true_mat, pixel_size, device):
     
     
     x_mass_density = torch.zeros_like(x_true_mat, device=device)
-    x_mass_density[0,0] = rho_df['Bones'][0]        * x_true_mat[0,0] * pixel_size  # in g.cm^(-3)
-    x_mass_density[0,1] = rho_df['Soft Tissues'][0] * x_true_mat[0,1] * pixel_size  # in g.cm^(-3)
 
-    
+    x_mass_density[0,0] =  x_true_mat[0,0] # no unit
+    x_mass_density[0,1] =  x_true_mat[0,1] # no unit
+  
+
+#     Q = torch.zeros(150,2, device=device)
+#     Q[:,0] = torch.tensor(df['Bones']       / rho_df['Bones'][0] ) * 10    / pixel_size**2       # in pix^2 g^(-1)
+#     Q[:,1] = torch.tensor(df['Soft Tissues']  / rho_df['Soft Tissues'][0] ) * 10 / pixel_size**2 # in pix^2 g^(-1)
+
+#     x_mass_density[0,0] = rho_df['Bones'][0]        * x_true_mat[0,0] * pixel_size**3 # in g.pix^(-3)
+#     x_mass_density[0,1] = rho_df['Soft Tissues'][0] * x_true_mat[0,1] * pixel_size**3 # in pix^2 g^(-1)   
     return Q, Q_pseudo_spectral, x_mass_density, rho
 
-def create_radon_op(img_size, n_angles, max_angle, geom, device):
+def create_radon_op(img_size, n_angles, det_count, max_angle, geom, device):
     angles = np.linspace(0, max_angle, n_angles, endpoint=False)
-    det_width = 1.2
-    det_count = 750 
-    
+    det_width = 1.2    
     if geom =='parallel':
         radon = Radon(resolution=img_size, angles=angles, det_count=det_count)
     
