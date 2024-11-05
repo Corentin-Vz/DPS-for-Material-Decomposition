@@ -144,7 +144,7 @@ for n_rec in range(n_recon):
                                                        step = torch.tensor([step_tdps_list[step],step_tdps_list[step],step_tdps_list[step]], device=device)[None,:,None,None],
                                                        device = device)
             PSNR_TDPS[n_rec, :, t_prime, step] = PSNR_tdps[-1,:]
-            SSIM_TDPS[n_rec, :, t_prime, step] = PSNR_tdps[-1,:]
+            SSIM_TDPS[n_rec, :, t_prime, step] = SSIM_tdps[-1,:]
             
             
             
